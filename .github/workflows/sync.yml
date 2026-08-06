@@ -1,0 +1,25 @@
+name: 周度同步上游资源
+
+on:
+  schedule:
+    # 每周一北京时间 04:17(UTC 20:17 周日)= 避开整点
+    - cron: '17 20 * * 0'
+  workflow_dispatch:  # 允许手动触发
+
+permissions:
+  contents: write  # 允许 push
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 检出本仓库
+        uses: actions/checkout@v4
+
+      - name: 配置 Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: 同步上游资源
+        run: bash tools/sync-resources.sh
